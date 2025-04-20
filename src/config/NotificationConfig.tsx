@@ -8,7 +8,7 @@ import {
 
 // Centralized notification messages configuration
 const NOTIFICATION_MESSAGES = {
-  success: "Operation Completed Successfully",
+  success: "Successfully Done !!!",
   error: "An Error Occurred",
   warning: "Warning: Potential Issue",
   info: "Important Information",

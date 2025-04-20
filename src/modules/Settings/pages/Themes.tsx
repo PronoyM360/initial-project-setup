@@ -3,6 +3,7 @@ import CustomizeTheme from "../components/CustomizeTheme";
 import { Divider } from "antd";
 import CustomizePrimaryColor from "../components/CustomizePrimaryColor";
 import CustomizeFontSizeAndFontFamily from "../components/CustomizeFontSizeAndFontFamily";
+import CustomizeSideBarColor from "../components/CustomizeSideBarColor";
 
 const Themes = () => {
   return (
@@ -11,6 +12,8 @@ const Themes = () => {
         <CustomizeTheme />
         <Divider />
         <CustomizePrimaryColor />
+        <Divider />
+        <CustomizeSideBarColor />
         <Divider />
         <CustomizeFontSizeAndFontFamily />
       </React.Fragment>

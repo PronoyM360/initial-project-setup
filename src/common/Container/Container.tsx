@@ -1,28 +1,15 @@
-import {
-  Button,
-  Col,
-  Dropdown,
-  Flex,
-  Input,
-  Row,
-  Space,
-  Typography,
-} from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import { Button, Col, Flex, Input, Row, Space, Typography } from "antd";
 import { debounce } from "lodash";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import {
-  addFilter,
-  addRestFilter,
-  resetFilter,
-} from "../../app/slice/filterSlice";
+import { DrawerTypes, showDrawer } from "../../app/slice/drawerSlice";
+import { addFilter, resetFilter } from "../../app/slice/filterSlice";
 import { ModalTypes, showModal } from "../../app/slice/modalSlice";
 import { useAppDispatch } from "../../app/store";
 import Iconify from "../../config/IconifyConfig";
 import useBreakpoint from "../../hooks/useBreakpoint";
 import BreadCrumb from "../Antd/BreadCrumb";
-import { DrawerTypes, showDrawer } from "../../app/slice/drawerSlice";
-import { SearchOutlined } from "@ant-design/icons";
 interface Props {
   title: string;
   content: React.ReactNode;
@@ -41,6 +28,7 @@ interface Props {
   filterData?: {
     [key: string]: string | number | boolean;
   };
+  resetButton?: boolean;
 }
 
 const Container: React.FC<Props> = ({
@@ -51,14 +39,13 @@ const Container: React.FC<Props> = ({
   buttonLabel = "Create",
   options = {},
   additionalContent,
-  filterData,
   buttonLink,
   additionalButton,
+  resetButton = true,
 }) => {
   const { lg } = useBreakpoint();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [open, setOpen] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
 
   const activeOptions = {
@@ -68,15 +55,10 @@ const Container: React.FC<Props> = ({
     showFilter: options.showFilter ?? true,
   };
 
-  const items = additionalContent?.map((item, index) => ({
-    key: String(index),
-    label: item,
-  }));
-
   const searchDebounce = useMemo(
     () =>
       debounce((value: string) => {
-        dispatch(addFilter({ name: "KEY", value: value || undefined }));
+        dispatch(addFilter({ name: "KEY", value: value.trim() || undefined }));
       }, 500),
     [dispatch]
   );
@@ -117,18 +99,20 @@ const Container: React.FC<Props> = ({
                 {buttonLabel}
               </Button>
             )}
-            {additionalButton}
-            <Button
-              title="Filter Reset"
-              onClick={() => {
-                dispatch(resetFilter());
-                navigate(window.location.pathname, {
-                  replace: true,
-                  state: { reset: true },
-                });
-              }}
-              icon={<Iconify icon="carbon:reset" />}
-            />
+            <div>{additionalButton}</div>
+            {resetButton && (
+              <Button
+                title="Filter Reset"
+                onClick={() => {
+                  dispatch(resetFilter());
+                  navigate(window.location.pathname, {
+                    replace: true,
+                    state: { reset: true },
+                  });
+                }}
+                icon={<Iconify icon="carbon:reset" />}
+              />
+            )}
           </Space>
         </Col>
         <Col span={24} lg={18}>
@@ -146,63 +130,10 @@ const Container: React.FC<Props> = ({
             )}
             {activeOptions.showFilter && (
               <>
-                <Dropdown
-                  open={open}
-                  trigger={["click"]}
-                  menu={{
-                    items: [
-                      ...(items || []),
-                      {
-                        type: "divider",
-                      },
-                      {
-                        label: (
-                          <Button
-                            icon={<Iconify icon="mynaui:filter" />}
-                            size="small"
-                            block
-                            type="link"
-                          >
-                            Filter Now
-                          </Button>
-                        ),
-                        key: "submit",
-                        onClick: () => {
-                          if (filterData) {
-                            Object.keys(filterData).forEach((key) => {
-                              dispatch(
-                                addRestFilter({
-                                  label: key,
-                                  value: filterData[key],
-                                })
-                              );
-                            });
-                          }
-                        },
-                      },
-                    ],
-                  }}
-                  placement="bottomRight"
-                  arrow
-                  onOpenChange={() => setOpen(!open)}
-                >
-                  <Button
-                    type={open ? "primary" : "default"}
-                    icon={
-                      <>
-                        <Iconify
-                          icon={
-                            open
-                              ? "mingcute:filter-fill"
-                              : "mingcute:filter-line"
-                          }
-                        />
-                      </>
-                    }
-                  >
-                    Filter By
-                  </Button>
-                </Dropdown>
+                {additionalContent?.map((item, index) => (
+                  <Flex key={index} wrap children={item} />
+                ))}
+                <Button type="link" icon={<Iconify icon="marketeq:filter" />} />
               </>
             )}
           </Flex>

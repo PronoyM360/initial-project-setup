@@ -10,7 +10,7 @@ const authEndpoint = api.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<ApiResponse<ApiResult>, LoginTypes>({
       query: (data): FetchArgs => ({
-        url: "/auth/agent/login",
+        url: "/auth/admin/login",
         method: "POST",
         body: data,
       }),
@@ -31,7 +31,7 @@ const authEndpoint = api.injectEndpoints({
 
     sendOTP: builder.mutation<ApiResponse<ApiResult>, ForgotPasswordTypes>({
       query: (data): FetchArgs => ({
-        url: "/common/send-email-otp",
+        url: "/common/otp/send",
         method: "POST",
         body: data,
       }),
@@ -40,7 +40,7 @@ const authEndpoint = api.injectEndpoints({
 
     matchOTP: builder.mutation<ApiResponse<ApiResult>, ForgotPasswordTypes>({
       query: (data): FetchArgs => ({
-        url: "/common/match-email-otp",
+        url: "/common/otp/match",
         method: "POST",
         body: data,
       }),
@@ -52,7 +52,7 @@ const authEndpoint = api.injectEndpoints({
       ForgotPasswordTypes
     >({
       query: (data): FetchArgs => ({
-        url: "/auth/member/forget-password",
+        url: "/auth/admin/forget-password",
         method: "POST",
         body: data,
       }),

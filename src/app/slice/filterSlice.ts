@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 
-type FilterStateType<T = unknown> = {
+ type FilterStateType<T = unknown> = {
   limit: number;
   skip: number;
   key?: string;
@@ -49,10 +49,17 @@ const filterSlice = createSlice({
         payload,
       }: PayloadAction<{
         label: string;
-        value: string | number | boolean | undefined;
+        value: string | number | boolean | undefined | unknown;
       }>
     ) => {
       state[payload.label] = payload.value;
+    },
+
+    resetSpecificFilter: (
+      state,
+      { payload }: PayloadAction<{ label: string }>
+    ) => {
+      delete state[payload.label];
     },
 
     resetFilter: (state) => {
@@ -70,6 +77,7 @@ const filterSlice = createSlice({
 
 export const FilterState = (state: RootState) => state.filter;
 
-export const { addFilter, addRestFilter, resetFilter } = filterSlice.actions;
+export const { addFilter, addRestFilter, resetFilter, resetSpecificFilter } =
+  filterSlice.actions;
 
 export default filterSlice.reducer;

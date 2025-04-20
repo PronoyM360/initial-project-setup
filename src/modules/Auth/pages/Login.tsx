@@ -1,11 +1,7 @@
-import { Alert, Checkbox, Flex, Form, Typography, type FormProps } from "antd";
+import { Alert, Flex, Form, Typography, type FormProps } from "antd";
 import React from "react";
 import { AuthError, LoginTypes } from "../types/authTypes";
 import Iconify from "../../../config/IconifyConfig";
-import {
-  emailValidator,
-  passwordValidator,
-} from "../../../utilities/validator";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import FormSubmit from "../../../common/Antd/Form/FormSubmit";
 import {
@@ -20,6 +16,7 @@ import {
   setMessage,
 } from "../../../app/slice/authSlice";
 import { sanitizeFormValue } from "react-form-sanitization";
+import Auth from "./Auth";
 
 const Login: React.FC = () => {
   const [login, { isLoading }] = useLoginMutation();
@@ -33,7 +30,7 @@ const Login: React.FC = () => {
 
   const onFinish: FormProps<LoginTypes>["onFinish"] = async (values) => {
     try {
-      const data = sanitizeFormValue(values, { ignoreKeys: ["remember"] });
+      const data = sanitizeFormValue(values);
       const { success } = await login(data).unwrap();
       if (success) {
         navigate(from, { replace: true });
@@ -54,7 +51,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <React.Fragment>
+    <Auth title="LOGIN | ADMIN">
       <Form
         form={form}
         onFinish={onFinish}
@@ -67,36 +64,34 @@ const Login: React.FC = () => {
           </Typography.Paragraph>
         )}
         <FormItemInput<LoginTypes>
-          name="email"
-          validator={emailValidator}
+          name="user_or_email"
           componentProps={{
-            type: "email",
-            placeholder: "e.g: some@example.com",
+            type: "text",
+            placeholder: "Enter the your email or username",
             prefix: <Iconify icon="ant-design:user-outlined" />,
           }}
         />
 
         <FormItemPassword<LoginTypes>
           name="password"
-          validator={passwordValidator}
           componentProps={{
             prefix: <Iconify icon="ant-design:lock-outlined" />,
-            placeholder: "e.g: ********",
+            placeholder: "Enter the your password",
           }}
         />
 
         <Flex
-          justify="space-between"
+          justify="flex-end"
           align="center"
           style={{ marginBottom: "1rem" }}
         >
-          <Form.Item<LoginTypes>
-            name="remember"
+          {/* <Form.Item<LoginTypes>
+            // name="remember"
             valuePropName="checked"
             noStyle
           >
             <Checkbox>Remember me</Checkbox>
-          </Form.Item>
+          </Form.Item> */}
 
           <Link to="/auth/send-otp">Forgot Password!</Link>
         </Flex>
@@ -108,7 +103,7 @@ const Login: React.FC = () => {
           icon="ant-design:login-outlined"
         />
       </Form>
-    </React.Fragment>
+    </Auth>
   );
 };
 

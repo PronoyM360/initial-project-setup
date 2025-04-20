@@ -10,6 +10,8 @@ const CustomizeTheme: React.FC = () => {
   const dispatch = useAppDispatch();
   const { lg } = useBreakpoint();
 
+  const { colorPrimary } = useAppSelector(ThemeState);
+
   return (
     <Space direction="vertical" style={{ width: "100%" }}>
       <Typography.Text strong style={{ fontSize: lg ? "1.5rem" : "1rem" }}>
@@ -45,7 +47,7 @@ const CustomizeTheme: React.FC = () => {
                   top: 0,
                   right: -50,
                   transform: "rotate(45deg)",
-                  backgroundColor: elements.siderBg,
+                  backgroundColor: elements.defaultTheme,
                   borderRadius: "0.5rem",
                   boxShadow:
                     "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px",
@@ -60,9 +62,10 @@ const CustomizeTheme: React.FC = () => {
                   top: 0,
                   right: -25,
                   transform: "rotate(45deg)",
-                  backgroundColor: elements.colorPrimary,
+                  backgroundColor: colorPrimary,
                   borderRadius: "0.5rem",
-                  boxShadow: "rgba(0, 0, 0, 0.15) 0px 2px 8px",
+                  boxShadow:
+                    "rgba(0, 0, 0, 0.15) 0px 2px 8px, rgba(50, 50, 93, 0.25) 0px 6px 12px -2px",
                   zIndex: 1,
                 }}
               />

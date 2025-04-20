@@ -1,53 +1,49 @@
 import { Space, Typography } from "antd";
 import React from "react";
 import useBreakpoint from "../../../hooks/useBreakpoint";
-import { logo } from "../../../utilities/images";
+import { useTimer } from "../hooks/useTImer";
 
 interface Props {
   title: string;
   description: string;
+  timer?: boolean;
 }
-const AuthHeader: React.FC<Props> = ({ title, description }) => {
-  const { xl } = useBreakpoint();
+
+const AuthHeader: React.FC<Props> = ({ title, description, timer }) => {
+  const { lg } = useBreakpoint();
+  const { time, isWarning } = useTimer();
 
   return (
     <React.Fragment>
       <Space
         direction="vertical"
-        align="center"
-        style={{ width: "100%", marginBottom: xl ? "2rem" : "1rem" }}
+        align={lg ? "start" : "center"}
+        style={{ width: "100%", marginBottom: lg ? "3rem" : "2rem" }}
       >
-        <div
-          style={{
-            width: xl ? "5rem" : "3rem",
-            height: xl ? "5rem" : "3rem",
-            overflow: "hidden",
-          }}
-        >
-          <img
-            src={logo}
-            alt="logo"
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
-        </div>
-        <Typography.Text
-          strong
+        <Typography.Title
           style={{
             display: "block",
-            fontSize: xl ? "2rem" : "1.5rem",
+            color: lg ? "inherit" : "white",
           }}
         >
           {title}
-        </Typography.Text>
+        </Typography.Title>
         <Typography.Text
           type="secondary"
           style={{
             display: "block",
-            textAlign: "center",
+            textAlign: lg ? "left" : "center",
+            color: lg ? "#85898B" : "#cccccc",
           }}
         >
           {description}
         </Typography.Text>
+
+        {timer && (
+          <Typography.Title level={3} type={isWarning ? "danger" : "success"}>
+            {time.minutes}:{time.seconds}
+          </Typography.Title>
+        )}
       </Space>
     </React.Fragment>
   );

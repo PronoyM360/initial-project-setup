@@ -28,7 +28,7 @@ const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> =
 export const api = createApi({
   reducerPath: "root",
   baseQuery: async (args, api, extraOptions) => {
-    const MAX_RETRIES = 3;
+    const MAX_RETRIES = 1;
     const RETRY_DELAY = 1000;
 
     const executeWithRetry = async (attempt = 1) => {

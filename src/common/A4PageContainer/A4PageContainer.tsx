@@ -1,20 +1,13 @@
-import dayjs from 'dayjs';
-import React, { useRef, useMemo } from 'react';
-import { useReactToPrint } from 'react-to-print';
-
-interface A4PageContainerProps {
-  children: React.ReactNode;
-  documentTitle?: string;
-  options?: {
-    printHeader?: boolean;
-    landscape?: boolean;
-  };
-}
+import dayjs from "dayjs";
+import React, { useRef, useMemo, useEffect } from "react";
+import { useReactToPrint } from "react-to-print";
+import { A4PageContainerProps } from "../Types/CommonTypes";
 
 const A4PageContainer: React.FC<A4PageContainerProps> = ({
   children,
-  documentTitle = 'Document',
+  documentTitle = "Document",
   options = {},
+  onComplete,
 }) => {
   const mergedOptions = useMemo(
     () => ({
@@ -31,12 +24,12 @@ const A4PageContainer: React.FC<A4PageContainerProps> = ({
     useMemo(
       () => ({
         documentTitle: `${documentTitle}-${dayjs().format(
-          'YYYY-MM-DD HH:mm:ss'
+          "DD-MM-YYYY HH:mm:ss"
         )}`,
         contentRef,
         pageStyle: `
       @page {
-        size: ${mergedOptions.landscape ? 'A4 landscape' : 'A4'};
+        size: ${mergedOptions.landscape ? "A4 landscape" : "A4"};
         margin: 10mm; 
       }
       @media print {
@@ -61,37 +54,29 @@ const A4PageContainer: React.FC<A4PageContainerProps> = ({
     )
   );
 
-  // Inline styles extracted to constant for better readability
-  const containerStyle: React.CSSProperties = {
-    // width: '210mm', // Exact A4 width
-    minHeight: '297mm', // Exact A4 height
-    margin: '0 auto', // Center the content
-    padding: '10mm', // Consistent with page margins
-    boxSizing: 'border-box',
-    backgroundColor: 'white',
-    position: 'relative',
-    pageBreakAfter: 'always',
-    boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
+  const printButtonStyle: React.CSSProperties = {
+    position: "absolute",
+    top: "5mm",
+    right: "5mm",
+    zIndex: 1000,
+    cursor: "pointer",
+    backgroundColor: "transparent",
+    border: "none",
+    padding: "5px",
   };
 
-  const printButtonStyle: React.CSSProperties = {
-    position: 'absolute',
-    top: '5mm',
-    right: '5mm',
-    zIndex: 1000,
-    cursor: 'pointer',
-    backgroundColor: 'transparent',
-    border: 'none',
-    padding: '5px',
-  };
+  useEffect(() => {
+    handlePrint();
+    onComplete?.();
+  }, [handlePrint, onComplete]);
 
   return (
-    <section style={containerStyle}>
+    <section style={{display: "none"}}>
       <div ref={contentRef}>{children}</div>
       <button
         style={printButtonStyle}
         onClick={() => handlePrint()}
-        aria-label='Print Document'
+        aria-label="Print Document"
       >
         🖨️ Print
       </button>

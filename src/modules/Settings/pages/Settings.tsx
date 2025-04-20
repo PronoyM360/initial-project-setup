@@ -6,6 +6,7 @@ import Iconify from "../../../config/IconifyConfig";
 import Profile from "./Profile";
 import Themes from "./Themes";
 import AllNotification from "../components/AllNotification";
+import ChangePassword from "./ChangePassword";
 
 const Settings: React.FC = () => {
   const { xl } = useBreakpoint();
@@ -38,7 +39,7 @@ const Settings: React.FC = () => {
             key: "change-password",
             label: "Change Password",
             icon: <Iconify icon="ion:key-outline" />,
-            children: <></>,
+            children: <ChangePassword/>,
           },
           {
             key: "notification",

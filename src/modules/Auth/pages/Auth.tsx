@@ -1,70 +1,54 @@
-import React, { useEffect, useMemo } from "react";
-import { Outlet, useLocation } from "react-router-dom";
-import AuthHeader from "../components/AuthHeader";
-import AuthFooter from "../components/AuthFooter";
-import useBreakpoint from "../../../hooks/useBreakpoint";
-import { useAppDispatch, useAppSelector } from "../../../app/store";
-import { AuthState, clearMessage } from "../../../app/slice/authSlice";
+import { Typography, Layout } from "antd";
+import { logo } from "../../../utilities/images";
+import "./AuthLayout.css";
 
-const HEADER_CONTENT = {
-  "/auth/login": {
-    title: "Yooo, Welcome Back!",
-    description:
-      "Login to access your account and continue your journey with us.",
-  },
-  "/auth/send-otp": {
-    title: "Forgot Password",
-    description:
-      "Don't worry! It happens. Please enter the email address associated with your account.",
-  },
-  "/auth/match-otp": {
-    title: "Match OTP",
-    description:
-      "A 6 digit code has been sent to your email address. This OTP will be valid for the next 3 minutes.",
-  },
-  "/auth/forgot-password": {
-    title: "Create New Password",
-    description:
-      "Your New Password must be different from previously used passwords.",
-  },
-} as const;
+const { Title } = Typography;
 
-const Auth: React.FC = () => {
-  const { xl } = useBreakpoint();
-  const { pathname } = useLocation();
-  const { message } = useAppSelector(AuthState);
-  const dispatch = useAppDispatch();
-
-  const { title, description } = useMemo(
-    () =>
-      HEADER_CONTENT[pathname as keyof typeof HEADER_CONTENT] || {
-        title: "Welcome!",
-        description: "Please navigate to the appropriate page.",
-      },
-    [pathname]
-  );
-
-  useEffect(() => {
-    if (!message) return;
-    const timer = setTimeout(() => dispatch(clearMessage()), 10000);
-    return () => clearTimeout(timer);
-  }, [message, dispatch]);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const AuthLayout = ({ children, title }: any) => {
+  const year = new Date().getFullYear();
 
   return (
-    <section style={{ display: "grid", placeItems: "center", height: "100vh" }}>
-      <div
-        style={{
-          padding: "1rem",
-          width: "100%",
-          maxWidth: xl ? "400px" : "350px",
-        }}
-      >
-        <AuthHeader title={title} description={description} />
-        <Outlet />
-        <AuthFooter />
+    <div className="login-main">
+      <div className="login-box">
+        <div className="login-content">
+          <div className="login-right">
+            <div className="login-left">
+              <img src={logo} alt="Auth illustration" />
+            </div>
+
+            <div style={{ textAlign: "center", marginBottom: "24px" }}>
+              <Title level={3} style={{ color: "black", margin: 0 }}>
+                {title}
+              </Title>
+            </div>
+
+            {children}
+          </div>
+
+          <Layout.Footer className="auth-footer">
+            <Typography.Paragraph style={{ margin: 0 }}>
+              Copyright © {year} <strong>Management System.</strong>{" "}
+              All rights reserved.
+              <br />
+              Designed and Developed by{" "}
+              <strong>
+                <a
+                  href="https://m360ict.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "lightblue", textDecoration: "none" }}
+                >
+                  M360ICT
+                </a>
+              </strong>
+              .
+            </Typography.Paragraph>
+          </Layout.Footer>
+        </div>
       </div>
-    </section>
+    </div>
   );
 };
 
-export default Auth;
+export default AuthLayout;

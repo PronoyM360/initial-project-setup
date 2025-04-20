@@ -15,6 +15,8 @@ import { useGetProfileQuery } from "../../../modules/Settings/api/profileEndpoin
 import { useAppDispatch } from "../../../app/store";
 import { clearAuth } from "../../../app/slice/authSlice";
 import api from "../../../app/api/api";
+import Marquee from "react-fast-marquee";
+import { admin_image, image_host_url } from "../../../utilities/images";
 
 interface Props {
   xs?: boolean;
@@ -31,6 +33,11 @@ const LayoutHeader: React.FC<Props> = ({
   const { data } = useGetProfileQuery();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const profile = data?.data;
+  const displayPhotoUrl = profile?.photo
+    ? `${image_host_url}${profile.photo}`
+    : admin_image;
 
   const handleLogout = () => {
     dispatch(clearAuth());
@@ -78,15 +85,6 @@ const LayoutHeader: React.FC<Props> = ({
           )}
 
           <div>
-            {/* <Typography.Text
-              style={{
-                display: "block",
-                lineHeight: 1,
-                fontSize: xs ? "11px" : "14px",
-              }}
-            >
-              Welcome,
-            </Typography.Text> */}
             <Typography.Text
               style={{
                 display: "block",
@@ -95,10 +93,45 @@ const LayoutHeader: React.FC<Props> = ({
                 fontSize: xs ? "12px" : "16px",
               }}
             >
-              Hello, {data?.data?.agency_name}
+              Hello, {data?.data?.username}
             </Typography.Text>
           </div>
         </Space>
+
+        <div
+          style={{
+            width: "70%",
+            overflow: "hidden",
+            margin: "0 20px",
+          }}
+        >
+          <Marquee
+            style={{
+              color: "black",
+              minWidth: "100%",
+              height: "40px",
+              display: "flex",
+              alignItems: "center",
+            }}
+            gradient={false}
+            pauseOnHover={true}
+            speed={40}
+          >
+            <span style={{ paddingRight: "50px" }}>
+              Welcome to the{"  "}
+              <span
+                style={{
+                  fontWeight: 600,
+                }}
+              >
+                the website
+              </span>
+              . This platform is designed to empower faculty members with
+              seamless tools for managing academic results, maintaining accurate
+              records, and enhancing administrative efficiency.
+            </span>
+          </Marquee>
+        </div>
 
         <Flex align="center" gap={20}>
           <Badge count={0}>
@@ -116,8 +149,8 @@ const LayoutHeader: React.FC<Props> = ({
               items: [
                 {
                   key: "1",
-                  label: <Link to="/settings">Settings</Link>,
-                  icon: <Iconify icon="ic:round-settings" />,
+                  label: <Link to="/profile">Profile</Link>,
+                  icon: <Iconify icon="ion:person-circle-outline" />,
                 },
                 {
                   key: "3",
@@ -134,7 +167,7 @@ const LayoutHeader: React.FC<Props> = ({
             <Avatar
               shape="circle"
               style={{ cursor: "pointer" }}
-              src="https://i.pinimg.com/564x/70/f2/f6/70f2f613ee6b58351388385e0c657ed7.jpg"
+              src={displayPhotoUrl}
             />
           </Dropdown>
         </Flex>

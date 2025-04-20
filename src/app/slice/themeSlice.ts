@@ -7,15 +7,17 @@ export type ThemeStateType = {
   fontFamily?: string;
   fontSize?: number;
   colorPrimary?: string;
+  sidebarColor?: string;
 
   name: string;
-  siderBg: string;
+  siderBg?: string;
   headerBg: string;
-  itemBg: string;
+  itemBg?: string;
   colorText?: string;
   subMenuItemBg?: string;
   itemHoverBg?: string;
   itemSelectedColor?: string;
+  defaultTheme?: string;
 
   // BUTTON COLOR
   viewBtn?: string;
@@ -74,11 +76,34 @@ const themeSlice = createSlice({
           return state;
       }
     },
+    SideBarCustomize: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        type: "SIDEBAR_COLOR";
+        value: string | number;
+      }>
+    ) => {
+      switch (payload.type) {
+        case "SIDEBAR_COLOR":
+          if (typeof payload.value === "string") {
+            state.sidebarColor = payload.value;
+            state.siderBg = payload.value;
+            state.itemBg = payload.value;
+          }
+          break;
+
+        default:
+          return state;
+      }
+    },
   },
 });
 
 export const ThemeState = (state: RootState) => state.theme;
 
-export const { toggleTheme, themeCustomize } = themeSlice.actions;
+export const { toggleTheme, themeCustomize, SideBarCustomize } =
+  themeSlice.actions;
 
 export default themeSlice.reducer;

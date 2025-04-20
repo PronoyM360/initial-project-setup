@@ -2,6 +2,7 @@ import { isFulfilled, isRejectedWithValue, Middleware } from "@reduxjs/toolkit";
 import { openNotification } from "../slice/notificationSlice";
 import { closeModal } from "../slice/modalSlice";
 import { closeDrawer } from "../slice/drawerSlice";
+import { RootState } from "../store";
 
 type EndpointAction = {
   meta: {
@@ -54,6 +55,7 @@ export const successMiddleware: Middleware = (api) => (next) => (action) => {
         api.dispatch(
           openNotification({
             description: message || CONFIG.MESSAGES.SUCCESS,
+            placement: "top",
           })
         );
         api.dispatch(closeModal());
@@ -75,12 +77,14 @@ export const errorMiddleware: Middleware = (api) => (next) => (action) => {
       const endpointName = getEndpointName(typedAction);
       const errorMessage = typedAction.payload?.data?.message;
 
-      if (!shouldIgnoreEndpoint(endpointName)) {
+      const token = (api.getState() as RootState).auth.token;
+
+      if (token && !shouldIgnoreEndpoint(endpointName)) {
         api.dispatch(
           openNotification({
             type: "error",
             description: errorMessage || CONFIG.MESSAGES.ERROR,
-            placement: "bottomLeft",
+            placement: "top",
           })
         );
       }

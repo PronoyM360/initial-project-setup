@@ -1,13 +1,30 @@
 import { Avatar, Button, Card, Flex, Typography } from "antd";
 import React from "react";
 import Iconify from "../../../config/IconifyConfig";
-import { logo } from "../../../utilities/images";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../../app/store";
+import { clearAuth } from "../../../app/slice/authSlice";
+import api from "../../../app/api/api";
+import { useGetProfileQuery } from "../../../modules/Settings/api/profileEndpoint";
+import { admin_image, image_host_url } from "../../../utilities/images";
 
 interface Props {
   collapsed: boolean;
 }
 
 const BottomSection: React.FC<Props> = ({ collapsed }) => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { data } = useGetProfileQuery();
+
+  const handleLogout = () => {
+    dispatch(clearAuth());
+    localStorage.clear();
+    dispatch(api.util.resetApiState());
+    localStorage.clear();
+    navigate("/auth/login");
+  };
+
   return (
     <div style={{ padding: "0.5rem" }}>
       <Card
@@ -27,13 +44,20 @@ const BottomSection: React.FC<Props> = ({ collapsed }) => {
           collapsed
             ? undefined
             : [
-                <Button type="text" icon={<Iconify icon="tabler:settings" />}>
-                  Settings
+                <Button
+                  type="text"
+                  style={{ color: "white" }}
+                  icon={<Iconify icon="ion:person-circle-outline" />}
+                >
+                  <Link to="/profile" style={{ color: "white" }}>
+                    Profile
+                  </Link>
                 </Button>,
                 <Button
                   type="text"
                   danger
                   icon={<Iconify icon="ant-design:logout-outlined" />}
+                  onClick={handleLogout}
                 >
                   Log out
                 </Button>,
@@ -57,7 +81,13 @@ const BottomSection: React.FC<Props> = ({ collapsed }) => {
               placeItems: "center",
             }}
           >
-            <Avatar src={logo} />
+            <Avatar
+              src={
+                data?.data?.photo
+                  ? image_host_url + data?.data?.photo
+                  : admin_image
+              }
+            />
           </div>
 
           {!collapsed && (
@@ -76,16 +106,7 @@ const BottomSection: React.FC<Props> = ({ collapsed }) => {
                   textAlign: collapsed ? "center" : "left",
                 }}
               >
-                Mehedi Hasan
-              </Typography.Text>
-              <Typography.Text
-                style={{
-                  color: "#cccccc",
-                  fontSize: 11,
-                  textAlign: collapsed ? "center" : "left",
-                }}
-              >
-                Admin
+                {data?.data?.name}
               </Typography.Text>
             </div>
           )}

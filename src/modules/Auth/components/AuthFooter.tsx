@@ -20,7 +20,7 @@ const AuthFooter: React.FC = () => {
           href="https://m360ict.com/"
           target="_blank"
           rel="noopener noreferrer"
-          style={{ color: "inherit", textDecoration: "none" }}
+          style={{ color: "blue", textDecoration: "none" }}
         >
           M360ICT
         </a>
